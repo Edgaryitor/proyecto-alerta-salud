@@ -1,0 +1,145 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerta de Salud</title>
+    <style>
+        /* Estilos Generales */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f0f4f8;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        h2 {
+            margin-top: 30px;
+            color: #007bff;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+
+        .high {
+            color: #d9534f;
+            font-weight: 700;
+        }
+
+        .low {
+            color: #5bc0de;
+            font-weight: 700;
+        }
+
+        .normal {
+            color: #5cb85c;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <h1>Monitor de Salud</h1>
+    <form action="/authorize" method="post">
+        <label for="user_name">Tu nombre:</label>
+        <input type="text" id="user_name" name="user_name" required><br><br>
+
+        <label for="user_email">Tu correo:</label>
+        <input type="email" id="user_email" name="user_email" required><br><br>
+
+        <label for="recipient_email">Correo del destinatario:</label>
+        <input type="email" id="recipient_email" name="recipient_email" required><br><br>
+
+        <label for="hours">Horas para consultar:</label>
+        <input type="number" id="hours" name="hours" value="24" required><br><br>
+
+        <button type="submit">Autorizar y Obtener Datos</button>
+    </form>
+
+    {% if heart_data %}
+        <h2>Datos de Frecuencia Cardíaca</h2>
+        <ul>
+            {% for bpm, date in heart_data %}
+                <li class="{{ 'high' if bpm > 100 else 'low' if bpm < 60 else 'normal' }}">
+                    {{ date }}: {{ bpm }} BPM</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if blood_pressure_data %}
+        <h2>Datos de Presión Arterial</h2>
+        <ul>
+            {% for systolic, diastolic, date in blood_pressure_data %}
+                <li class="{{ 'high' if systolic > 140 or diastolic > 90 else 'low' if systolic < 90 or diastolic < 60 else 'normal' }}">
+                    {{ date }}: {{ systolic }}/{{ diastolic }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
